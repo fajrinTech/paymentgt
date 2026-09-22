@@ -27,6 +27,27 @@ Umumnya, QRIS statis di toko fisik mengharuskan pelanggan mengetik sendiri nomin
 
 ---
 
+## 📁 Struktur Direktori
+
+```
+.
+├── cmd/
+│   ├── server/       # HTTP REST API server & webhook daemon
+│   ├── gateway/      # CLI generator & terminal QR viewer
+│   └── login/        # CLI interaktif login OTP ShopeePay Merchant
+├── core/             # Tipe domain, status pembayaran, error handling
+├── payment/          # Payment service, allocation manager, mutation matcher
+├── qris/             # Parser & builder EMVCo QRIS, CRC16 checksum
+├── shopee/           # Provider ShopeePay Partner/Merchant (Production-ready)
+├── gopay/            # Provider GoPay/GoBiz (GoID OAuth2 & settlement feed)
+├── utils/            # Logger, formatting helper, ID generator
+├── session.example.json # Template konfigurasi session merchant
+├── go.mod
+└── README.md
+```
+
+---
+
 ## 🔄 Alur Transaksi (Transaction Flow)
 
 ```mermaid
