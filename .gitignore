@@ -1,0 +1,27 @@
+# Binaries
+paymentgt
+paymentgt.exe
+paygateme-tui
+paygateme-login
+tui
+gateway
+server
+zeffserver
+*.exe
+
+# Sensitive session files & secrets (cookies/tokens)
+*.session.json
+session.json
+.env
+*.env
+
+# QR images & media (personal)
+*.png
+*.jpg
+*.jpeg
+
+# Go & builds
+*.test
+*.out
+.gocache/
+vendor/

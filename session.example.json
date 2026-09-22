@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "cookies": [
+    {
+      "name": "SPC_F",
+      "value": "YOUR_SPC_F_COOKIE_VALUE",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": false,
+      "hostOnly": true
+    },
+    {
+      "name": "SPC_SEC_SI",
+      "value": "YOUR_SPC_SEC_SI_COOKIE_VALUE",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": true,
+      "hostOnly": true
+    },
+    {
+      "name": "REC_T_ID",
+      "value": "YOUR_REC_T_ID_COOKIE_VALUE",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": true,
+      "hostOnly": true
+    },
+    {
+      "name": "SPC_T_IV",
+      "value": "YOUR_SPC_T_IV_COOKIE_VALUE",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": true,
+      "hostOnly": true
+    },
+    {
+      "name": "SPC_B_SI",
+      "value": "YOUR_SPC_B_SI_COOKIE_VALUE",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": true,
+      "hostOnly": true
+    },
+    {
+      "name": "SPC_B_EC",
+      "value": "YOUR_SPC_B_EC_COOKIE_VALUE",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": true,
+      "hostOnly": true
+    },
+    {
+      "name": "SPC_CLIENTID",
+      "value": "YOUR_SPC_CLIENTID_COOKIE_VALUE",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": false,
+      "hostOnly": true
+    },
+    {
+      "name": "SPC_SI",
+      "value": "YOUR_SPC_SI_COOKIE_VALUE",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": true,
+      "hostOnly": true
+    },
+    {
+      "name": "SPC_R_T_ID",
+      "value": "YOUR_SPC_R_T_ID_COOKIE_VALUE",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": true,
+      "hostOnly": true
+    },
+    {
+      "name": "SPC_T_ID",
+      "value": "YOUR_SPC_T_ID_COOKIE_VALUE",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": true,
+      "hostOnly": true
+    },
+    {
+      "name": "SPC_U",
+      "value": "YOUR_USER_ID",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": true,
+      "hostOnly": true
+    },
+    {
+      "name": "SPC_ST",
+      "value": "YOUR_SPC_ST_COOKIE_VALUE",
+      "domain": "partner.business.accounts.shopee.co.id",
+      "path": "/",
+      "secure": true,
+      "httpOnly": true,
+      "hostOnly": true
+    }
+  ],
+  "merchant": {
+    "id": "YOUR_MERCHANT_ID",
+    "name": "YOUR_STORE_NAME",
+    "status": 1
+  },
+  "merchants": [
+    {
+      "id": "YOUR_MERCHANT_ID",
+      "name": "YOUR_STORE_NAME",
+      "status": 1
+    }
+  ],
+  "stores": [
+    {
+      "id": "YOUR_STORE_ID",
+      "name": "YOUR_STORE_NAME",
+      "status": 1
+    }
+  ],
+  "storeId": "YOUR_STORE_ID",
+  "createdAt": 1700000000000,
+  "expiresAt": 1800000000000
+}
