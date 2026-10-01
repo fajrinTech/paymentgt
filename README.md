@@ -113,7 +113,7 @@ paymentgt/
 Banyak pengembang gateway QRIS mandiri mengalami masalah saat mengonversi QRIS Statis menjadi Dinamis: ketika di-scan memakai aplikasi Shopee atau ShopeePay, aplikasi memunculkan pesan error **"Kode QR Kadaluwarsa"**.
 
 ### Penyebab Teknis
-Ketika Tag 01 (*Point of Initiation*) diubah menjadi `12` (*Dynamic*), aplikasi Shopee membaca bahwa QR tersebut adalah transaksi dinamis milik Shopee (`ID.CO.SHOPEE.WWW`). Aplikasi langsung mencari ID invoice internal ke cloud Shopee. Karena QR dinamis dibuat secara lokal di server kita, server Shopee menolaknya sebagai order kadaluwarsa atau tidak terdaftar.
+Ketika Tag 01 (*Point of Initiation*) diubah menjadi `12` (*Dynamic*), aplikasi Shopee membaca bahwa QR tersebut adalah transaksi dinamis miliknya. Aplikasi langsung mencari ID invoice internal ke cloud server Shopee. Karena QR dinamis dibuat secara lokal di server kita, server Shopee menolaknya sebagai order kadaluwarsa atau tidak terdaftar.
 
 ### Solusi PaymentGT (Hybrid Mode)
 PaymentGT secara default menerapkan mode **Hybrid EMVCo**:
@@ -152,18 +152,18 @@ Buka browser dan login ke portal [Shopee Partner](https://partner.shopee.co.id/)
 
 ### 3. Siapkan String QRIS Statis
 
-Dapatkan string teks QRIS statis outlet Anda (string diawali dengan `000201010211...`). String ini bisa didapat dengan memindai gambar QR cetak Anda menggunakan aplikasi scanner QR teks biasa.
+Dapatkan string teks QRIS statis outlet Anda (contoh format: `010101010101010101...`). String ini bisa didapat dengan memindai gambar QR cetak Anda menggunakan aplikasi scanner QR teks biasa.
 
 ### 4. Jalankan Server
 
 Jalankan langsung menggunakan flag CLI:
 ```bash
-go run ./cmd/server -port 8080 -session session.json -qris "00020101021126610016ID.CO.SHOPEE.WWW..."
+go run ./cmd/server -port 8080 -session session.json -qris "010101010101010101..."
 ```
 
 Atau menggunakan environment variables:
 ```bash
-export STATIC_QRIS="00020101021126610016ID.CO.SHOPEE.WWW..."
+export STATIC_QRIS="010101010101010101..."
 export PORT=8080
 go run ./cmd/server
 ```
@@ -171,7 +171,7 @@ go run ./cmd/server
 Log konsol saat server aktif:
 ```
 [paygateme] INFO [OK] QRIS Gateway Server berjalan di port :8080
-[paygateme] INFO [MERCHANT] Merchant: NAMA TOKO ANDA | Store ID: 23677133
+[paygateme] INFO [MERCHANT] Merchant: NAMA TOKO ANDA | Store ID: 01010101
 [paygateme] INFO Polling mutasi ShopeePay aktif...
 ```
 
@@ -194,7 +194,7 @@ Memeriksa status keaktifan daemon dan konektivitas sesi merchant.
   {
     "status": "ok",
     "merchant": "TOKO CONTOH SEJAHTERA",
-    "store_id": "23677133",
+    "store_id": "01010101",
     "timestamp": 1727830000
   }
   ```
@@ -236,7 +236,7 @@ Membuat tagihan QRIS baru dengan nominal yang terkunci otomatis.
     "unique_amount": 50000,
     "unique_offset": 0,
     "status": "pending",
-    "qris_string": "00020101021126610016ID.CO.SHOPEE.WWW...5405500005802ID...6304A1B2",
+    "qris_string": "0101010101010101010101010101010101010101...",
     "qris_image_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...",
     "expires_at": "2026-10-02T01:15:00Z",
     "created_at": "2026-10-02T01:00:00Z"
@@ -275,7 +275,7 @@ Memeriksa status pembayaran secara manual atau via polling frontend.
     "status": "paid",
     "expires_at": "2026-10-02T01:15:00Z",
     "paid_at": "2026-10-02T01:04:22Z",
-    "transaction_id": "SPP1029384756",
+    "transaction_id": "SPP0101010101",
     "payment_type": "ShopeePay"
   }
   ```
@@ -295,7 +295,7 @@ Ketika pelanggan menyelesaikan pembayaran, PaymentGT secara otomatis mengirimkan
   "amount": 50000,
   "paid_amount": 50000,
   "status": "paid",
-  "transaction_id": "SPP1029384756",
+  "transaction_id": "SPP0101010101",
   "paid_at": "2026-10-02T01:04:22Z",
   "payment_type": "ShopeePay"
 }
@@ -380,11 +380,11 @@ Anda dapat menjalankan PaymentGT di PC kantor, server rumahan, atau mini PC tanp
 ```bash
 # Windows
 go build -ldflags="-s -w" -o paymentgt-server.exe ./cmd/server
-./paymentgt-server.exe -port 8080 -session session.json -qris "000201010211..."
+./paymentgt-server.exe -port 8080 -session session.json -qris "010101010101010101..."
 
 # Linux / macOS
 go build -ldflags="-s -w" -o paymentgt-server ./cmd/server
-./paymentgt-server -port 8080 -session session.json -qris "000201010211..."
+./paymentgt-server -port 8080 -session session.json -qris "010101010101010101..."
 ```
 > **Tips Server Pribadi**: Agar webhook dan checkout dapat diakses dari internet publik tanpa IP publik statis, Anda dapat memanfaatkan tunnel gratis yang aman seperti **Cloudflare Tunnel (cloudflared)** atau **ngrok**.
 
@@ -409,7 +409,7 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=/opt/paymentgt
-Environment="STATIC_QRIS=00020101021126610016ID.CO.SHOPEE.WWW..."
+Environment="STATIC_QRIS=010101010101010101..."
 ExecStart=/opt/paymentgt/paymentgt-server -port 8080 -session /opt/paymentgt/session.json
 Restart=always
 RestartSec=5
