@@ -28,7 +28,28 @@ func buildStaticQris(t *testing.T) string {
 
 func TestStaticToDynamicQrisInjectsAmount(t *testing.T) {
 	static := buildStaticQris(t)
-	dynamic, err := StaticToDynamicQris(static, 10001)
+	// Default call preserves POIStatic ("11") for ShopeePay scan compatibility.
+	hybrid, err := StaticToDynamicQris(static, 10001)
+	if err != nil {
+		t.Fatalf("StaticToDynamicQris: %v", err)
+	}
+
+	m, err := ParseEmv(hybrid)
+	if err != nil {
+		t.Fatalf("ParseEmv(hybrid): %v", err)
+	}
+
+	if got := m[TagTransactionAmount]; got != "10001" {
+		t.Fatalf("tag 54 = %q, want %q", got, "10001")
+	}
+	if got := m[TagPointOfInitiation]; got != POIStatic {
+		t.Fatalf("tag 01 = %q, want %q", got, POIStatic)
+	}
+}
+
+func TestStaticToDynamicQrisSupportsExplicitDynamicPOI(t *testing.T) {
+	static := buildStaticQris(t)
+	dynamic, err := StaticToDynamicQris(static, 10001, POIDynamic)
 	if err != nil {
 		t.Fatalf("StaticToDynamicQris: %v", err)
 	}
@@ -59,9 +80,8 @@ func TestStaticToDynamicQrisValidChecksum(t *testing.T) {
 
 func TestStaticToDynamicQrisRejectsBadChecksum(t *testing.T) {
 	static := buildStaticQris(t)
-	// Corrupt a byte in the merchant name. We know "MERCHANT" appears in the
-	// payload (tag 59 value). Replacing it with "XERCHANT" keeps the payload
-	// parseable but breaks the CRC.
+	// Corrupt a byte in the merchant name. Replacing it with "XERCHANT"
+	// keeps the payload parseable but breaks the CRC.
 	corrupted := replaceOnce(static, "MERCHANT", "XERCHANT")
 	if corrupted == static {
 		t.Fatal("corruption did not alter the payload")
@@ -99,8 +119,7 @@ func TestStaticToDynamicQrisRejectsNonPositiveAmount(t *testing.T) {
 }
 
 func TestParseEmvRejectsTruncated(t *testing.T) {
-	// A tag claiming 99 bytes but the payload ends early.
-	truncated := "0058" // tag 00 length 58 but no value
+	truncated := "0058"
 	if _, err := ParseEmv(truncated); err == nil {
 		t.Fatal("expected error for truncated payload")
 	}
