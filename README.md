@@ -4,7 +4,7 @@
 
 **High-Performance Self-Hosted QRIS Dynamic Gateway & Settlement Daemon**
 
-Developed by **Fajrin Widianto** ([@fajrinTech](https://github.com/fajrinTech))
+Developed by **Fajrin Widianto (Zeff)** ([@fajrinTech](https://github.com/fajrinTech))
 
 [![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?style=flat-square&logo=go)](https://golang.org)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
@@ -22,7 +22,7 @@ Developed by **Fajrin Widianto** ([@fajrinTech](https://github.com/fajrinTech))
 >
 > Proyek **PaymentGT** adalah perangkat lunak independen (*unofficial*) yang dikembangkan untuk tujuan riset teknis, otomasi merchant mandiri (*self-hosted*), dan studi integrasi sistem pembayaran.
 >
-> * **Bukan Layanan Resmi**: Proyek ini **TIDAK berafiliasi, TIDAK terafiliasi, TIDAK disponsori, dan TIDAK didukung secara resmi oleh PT Shopee International Indonesia, Sea Group, PT GoTo Gojek Tokopedia Tbk, atau afiliasinya**.
+> * **Bukan Layanan Resmi**: Proyek ini **TIDAK berafiliasi, TIDAK didukung, dan TIDAK terkait secara resmi dengan PT Shopee International Indonesia, Sea Group, PT GoTo Gojek Tokopedia Tbk, atau afiliasinya**.
 > * **Hak Kekayaan Intelektual**: Semua nama merek, logo, dan merek dagang seperti Shopee, ShopeePay, Gojek, GoPay, dan QRIS adalah hak milik mutlak dari pemilik resminya masing-masing.
 > * **Tanggung Jawab Penggunaan**: Penggunaan software ini sepenuhnya merupakan tanggung jawab pengguna sebagai pemilik akun merchant. Pengguna wajib mematuhi seluruh Syarat dan Ketentuan layanan merchant yang berlaku. Pengembang tidak bertanggung jawab atas segala bentuk sanksi, penangguhan akun, atau kerugian operasional yang timbul akibat penggunaan software ini.
 
@@ -38,8 +38,23 @@ Banyak pemilik usaha online dan UMKM terbebani potongan fee per transaksi yang t
 2. **Solusi Anti-Kadaluwarsa ShopeePay (Universal Scanner Compatibility)**: Menggunakan teknik injeksi EMVCo Hybrid (Tag 01 = 11 + Tag 54). Menghilangkan bug klasik *"Kode QR Kadaluwarsa"* pada scanner aplikasi ShopeePay, sekaligus tetap mengunci nominal otomatis pada BCA, Mandiri, BRI, BNI, GoPay, Dana, OVO, LinkAja, dan seluruh m-banking di Indonesia.
 3. **Settlement Real-time**: Daemon memonitor mutasi transaksi masuk langsung dari API ShopeePay Partner/Merchant secara otomatis.
 4. **Notifikasi Webhook Andal**: Mengirim HTTP POST ke server backend Anda secara instan saat dana terkonfirmasi, dilengkapi mekanisme retry otomatis hingga 3 kali.
-5. **Ultra Ringan & Hemat Resource**: Ditulis dalam Go murni. Konsumsi RAM hanya ~15 sampai 25 MB dengan latensi respon REST API di bawah 5ms. Sangat hemat dan stabil dijalankan di VPS termurah ($1 - $2/bulan).
+5. **Ultra Ringan & Hemat Resource**: Ditulis dalam Go murni. Konsumsi RAM hanya ~15 sampai 25 MB dengan latensi respon REST API di bawah 5ms. Sangat hemat dan stabil dijalankan di VPS termurah ($1 - $2/bulan) maupun server pribadi rumahan.
 6. **Keamanan 100% Terbuka**: Tanpa script obfuscated, tanpa backdoor, tanpa pengiriman kredensial ke server pihak ketiga. Seluruh kode sumber dapat Anda audit sepenuhnya.
+
+---
+
+## Fleksibilitas & Keamanan Deployment
+
+### Bisa Dijalankan di Mana Saja
+* **Server Pribadi (Home Server / Local PC / Mini PC)**: Dapat dijalankan langsung di komputer pribadi, laptop kantor, server rumahan, atau mini PC (seperti Raspberry Pi) dengan sistem operasi Windows, Linux, maupun macOS. Anda tidak wajib menyewa VPS bila memiliki server lokal yang terhubung ke jaringan.
+* **VPS (Virtual Private Server)**: Berjalan mulus di VPS Linux berspesifikasi paling minim sekalipun (RAM 512 MB, 1 vCPU) seperti paket $1 sampai $2/bulan di DigitalOcean, Linode, Contabo, AWS Lightsail, Biznet Gio, IDCloudHost, atau penyedia lokal lainnya.
+* **Dedicated Server & Container**: Sangat cocok dijadikan microservice internal pada arsitektur Docker / Kubernetes maupun dijalankan sebagai daemon Systemd latar belakang (background service) selama 24/7 tanpa henti.
+
+### Terjamin Aman Digunakan (100% Private & Self-Hosted)
+* **Dana Langsung ke Rekening Anda (Zero Middleman)**: Seluruh pembayaran dari pembeli masuk 100% langsung ke saldo merchant ShopeePay Anda sendiri tanpa perantara. Tidak ada sistem deposit pihak ketiga, tidak ada masa penahanan dana (*hold/escrow*), dan tidak ada potongan fee persentase per transaksi dari gateway.
+* **Kerahasiaan Kredensial 100% Terjaga**: File konfigurasi sesi (`session.json`) dan token otorisasi merchant hanya berada di mesin Anda sendiri. Daemon PaymentGT tidak pernah mengirim kredensial, cookie, atau data transaksi ke server eksternal selain endpoint resmi merchant Shopee.
+* **Kode Sumber Transparan**: Tidak ada kode yang dienkripsi (tanpa enkripsi IonCube, tanpa biner tertutup, tanpa obfuscator). Anda memegang kendali penuh atas setiap baris kode yang dieksekusi.
+* **Proteksi File Sesi**: Sistem menyimpan file sesi dengan izin akses berkas ketat (`0600` / hanya pemilik file yang dapat membaca) dan telah terisolasi di file `.gitignore` agar terhindar dari kebocoran ke repositori git publik.
 
 ---
 
@@ -76,19 +91,19 @@ sequenceDiagram
 
 ```
 paymentgt/
-â”œâ”€â”€ cmd/
-â”‚   â”œâ”€â”€ server/            # HTTP REST API server & webhook daemon
-â”‚   â”œâ”€â”€ gateway/           # CLI generator & terminal QR viewer
-â”‚   â””â”€â”€ login/             # CLI interaktif login OTP ShopeePay Merchant
-â”œâ”€â”€ core/                  # Domain types, payment status, core error hierarchy
-â”œâ”€â”€ payment/               # Payment service, allocation manager, settlement matcher
-â”œâ”€â”€ qris/                  # Parser & builder EMVCo QRIS, CRC16 checksum engine
-â”œâ”€â”€ shopee/                # Provider ShopeePay Partner (Cookie, Auth, Feed, API)
-â”œâ”€â”€ gopay/                 # Provider GoPay (GoID OAuth2 & transaction feed)
-â”œâ”€â”€ utils/                 # Logger, phone parser, ID generator, CRC16 bitwise
-â”œâ”€â”€ session.example.json   # Template kredensial sesi merchant
-â”œâ”€â”€ go.mod
-â””â”€â”€ README.md
+|-- cmd/
+|   |-- server/            # HTTP REST API server & webhook daemon
+|   |-- gateway/           # CLI generator & terminal QR viewer
+|   \-- login/             # CLI interaktif login OTP ShopeePay Merchant
+|-- core/                  # Domain types, payment status, core error hierarchy
+|-- payment/               # Payment service, allocation manager, settlement matcher
+|-- qris/                  # Parser & builder EMVCo QRIS, CRC16 checksum engine
+|-- shopee/                # Provider ShopeePay Partner (Cookie, Auth, Feed, API)
+|-- gopay/                 # Provider GoPay (GoID OAuth2 & transaction feed)
+|-- utils/                 # Logger, phone parser, ID generator, CRC16 bitwise
+|-- session.example.json   # Template kredensial sesi merchant
+|-- go.mod
+\-- README.md
 ```
 
 ---
@@ -155,8 +170,8 @@ go run ./cmd/server
 
 Log konsol saat server aktif:
 ```
-[paygateme] INFO ðŸš€ Zeff QRIS Gateway Server berjalan di port :8080
-[paygateme] INFO ðŸ“Œ Merchant: NAMA TOKO ANDA | Store ID: 23677133
+[paygateme] INFO [OK] QRIS Gateway Server berjalan di port :8080
+[paygateme] INFO [MERCHANT] Merchant: NAMA TOKO ANDA | Store ID: 23677133
 [paygateme] INFO Polling mutasi ShopeePay aktif...
 ```
 
@@ -357,15 +372,33 @@ async def payment_callback(request: Request):
 
 ---
 
-## Panduan Deployment Production (Linux 24/7)
+## Panduan Deployment (Server Pribadi & VPS)
 
-### 1. Compile Binary Executable
+### Menjalankan di Server Pribadi / PC Lokal
+Anda dapat menjalankan PaymentGT di PC kantor, server rumahan, atau mini PC tanpa perlu sewa VPS:
+
+```bash
+# Windows
+go build -ldflags="-s -w" -o paymentgt-server.exe ./cmd/server
+./paymentgt-server.exe -port 8080 -session session.json -qris "000201010211..."
+
+# Linux / macOS
+go build -ldflags="-s -w" -o paymentgt-server ./cmd/server
+./paymentgt-server -port 8080 -session session.json -qris "000201010211..."
+```
+> **Tips Server Pribadi**: Agar webhook dan checkout dapat diakses dari internet publik tanpa IP publik statis, Anda dapat memanfaatkan tunnel gratis yang aman seperti **Cloudflare Tunnel (cloudflared)** atau **ngrok**.
+
+---
+
+### Menjalankan di VPS Linux (Systemd Service 24/7)
+
+#### 1. Compile Binary Executable
 Jalankan kompilasi di server atau laptop Anda:
 ```bash
 go build -ldflags="-s -w" -o paymentgt-server ./cmd/server
 ```
 
-### 2. Pasang Systemd Service (Otomatis Jalan Saat Booting)
+#### 2. Pasang Systemd Service (Otomatis Jalan Saat Booting)
 Buat file service di `/etc/systemd/system/paymentgt.service`:
 ```ini
 [Unit]
@@ -393,7 +426,7 @@ sudo systemctl enable --now paymentgt
 sudo systemctl status paymentgt
 ```
 
-### 3. Setup Nginx Reverse Proxy & SSL HTTPS
+#### 3. Setup Nginx Reverse Proxy & SSL HTTPS
 Konfigurasi virtual host di `/etc/nginx/sites-available/paymentgt`:
 ```nginx
 server {
@@ -426,7 +459,7 @@ server {
 
 Project dikembangkan dan dipelihara secara aktif oleh:
 
-* **Author**: **Fajrin Widianto**
+* **Author**: **Fajrin Widianto (Zeff)**
 * **Repository**: [github.com/fajrinTech/paymentgt](https://github.com/fajrinTech/paymentgt)
 * **Lisensi**: [MIT License](LICENSE)
 
